@@ -26,6 +26,7 @@ export default function HomePage() {
   const navigate = useNavigate()
   const [stats,    setStats]    = useState(null)
   const [urgent,   setUrgent]   = useState([])
+  const [recent,   setRecent]   = useState([])
   const [loading,  setLoading]  = useState(true)
   const [search,   setSearch]   = useState('')
   const revealRefs = useRef([])
@@ -34,9 +35,11 @@ export default function HomePage() {
     Promise.all([
       api.get('/campaigns/stats').catch(() => ({ data: { stats: {} } })),
       api.get('/campaigns/urgent').catch(() => ({ data: { campaigns: [] } })),
-    ]).then(([s, u]) => {
+      api.get('/campaigns', { params: { status: 'active', page: 1, limit: 4 } }).catch(() => ({ data: { campaigns: [] } })),
+    ]).then(([s, u, r]) => {
       setStats(s.data.stats)
       setUrgent(u.data.campaigns || [])
+      setRecent(r.data.campaigns || [])
     }).finally(() => setLoading(false))
   }, [])
 
@@ -147,6 +150,25 @@ export default function HomePage() {
             </div>
             <div className="grid-3 reveal" ref={addReveal}>
               {urgent.slice(0, 3).map(c => <CampaignCard key={c._id} campaign={c}/>)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── RECENT CAMPAIGNS ───────────────────────────────── */}
+      {recent.length > 0 && (
+        <section className="section recent-section">
+          <div className="container">
+            <div className="section-header" ref={addReveal}>
+              <div className="reveal" ref={addReveal}>
+                <p className="section-label">🆕 Новые сборы</p>
+                <h2 className="section-title">Последние кампании</h2>
+                <p className="section-desc">Свежие активные сборы, которые уже готовы получить поддержку.</p>
+              </div>
+              <Link to="/campaigns" className="btn btn-secondary">Посмотреть все →</Link>
+            </div>
+            <div className="grid-3 reveal" ref={addReveal}>
+              {recent.map(c => <CampaignCard key={c._id} campaign={c}/>)}
             </div>
           </div>
         </section>

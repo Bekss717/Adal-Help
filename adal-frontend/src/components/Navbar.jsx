@@ -67,6 +67,7 @@ export default function Navbar() {
         <nav className="navbar-links">
           <Link to="/" className={isActive('/')}>Главная</Link>
           <Link to="/campaigns" className={isActive('/campaigns')}>Сборы</Link>
+          <Link to="/analytics" className={isActive('/analytics')}>Аналитика</Link>
 
           {/* Categories dropdown */}
           <div className="nav-dropdown" ref={catRef}>
@@ -163,6 +164,7 @@ export default function Navbar() {
         <div className="mobile-menu">
           <Link to="/" className="mobile-link">Главная</Link>
           <Link to="/campaigns" className="mobile-link">Все сборы</Link>
+          <Link to="/analytics" className="mobile-link">Аналитика</Link>
           <div className="mobile-divider"/>
           <p className="mobile-section-label">Категории</p>
           {CATEGORIES.map(cat => (

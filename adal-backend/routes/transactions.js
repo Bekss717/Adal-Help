@@ -57,13 +57,12 @@ router.post('/donate', protect, async (req, res) => {
     })
 
     // Update campaign totals
-    await Campaign.findByIdAndUpdate(campaignId, {
+    const updatedCampaign = await Campaign.findByIdAndUpdate(campaignId, {
       $inc: { raisedAmount: amountKGS, escrowBalance: amountKGS, donorCount: 1 }
-    })
+    }, { new: true, runValidators: true })
 
     // Auto-complete if goal reached
-    const updated = await Campaign.findById(campaignId)
-    if (updated.raisedAmount >= updated.goalAmount) {
+    if (updatedCampaign.raisedAmount >= updatedCampaign.goalAmount) {
       await Campaign.findByIdAndUpdate(campaignId, { status: 'completed' })
     }
 

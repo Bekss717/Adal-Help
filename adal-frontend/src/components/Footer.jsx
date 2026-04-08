@@ -24,6 +24,7 @@ export default function Footer() {
             <h4>Платформа</h4>
             <Link to="/campaigns">Все сборы</Link>
             <Link to="/campaigns?urgent=true">Срочная помощь</Link>
+            <Link to="/analytics">Аналитика</Link>
             <Link to="/start-fees">Начать сбор</Link>
           </div>
           <div className="footer-col">

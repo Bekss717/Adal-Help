@@ -181,13 +181,13 @@ export default function StartFeesPage() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label">Дедлайн (необязательно)</label>
+                  <label className="form-label">Дедлайн (обязательно)</label>
                   <input className="form-input" type="date"
                     min={new Date().toISOString().split('T')[0]}
                     value={form.deadline} onChange={e => set('deadline', e.target.value)} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Местоположение (необязательно)</label>
+                  <label className="form-label">Местоположение (обязательно)</label>
                   <input className="form-input" type="text" placeholder="Напр., Бишкек, Ош"
                     value={form.location} onChange={e => set('location', e.target.value)} />
                 </div>

@@ -190,7 +190,7 @@ export default function ProfilePage({ defaultTab = 'profile' }) {
                 <div className="empty-state-icon">📋</div>
                 <h3>Нужен аккаунт организатора</h3>
                 <p>Для создания сбора вам потребуется аккаунт организатора. Зарегистрируйте новый аккаунт и выберите роль «Сбор средств».</p>
-                <Link to="/register" className="btn btn-primary" style={{ marginTop: 16 }}>Create Organizer Account</Link>
+                <Link to="/register" className="btn btn-primary" style={{ marginTop: 16 }}>Создать учетную запись организатора</Link>
               </div>
             ) : campaigns.length === 0 ? (
               <div className="empty-state">
