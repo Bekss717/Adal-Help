@@ -63,7 +63,7 @@ export default function CampaignDetailPage() {
         <div className="detail-main">
           {/* Breadcrumb */}
           <div className="breadcrumb">
-            <Link to="/campaigns">Кампании</Link>
+            <Link to="/campaigns">Сборы</Link>
             <span>›</span>
             <span>{campaign.category}</span>
           </div>
@@ -95,7 +95,7 @@ export default function CampaignDetailPage() {
 
           {/* Description */}
           <div className="detail-description">
-            <h3>Об этой кампании</h3>
+            <h3>Об этом сборе</h3>
             <p>{campaign.description}</p>
           </div>
 
@@ -103,7 +103,7 @@ export default function CampaignDetailPage() {
           <div className="detail-organizer">
             <div className="org-avatar">{campaign.organizer?.name?.charAt(0).toUpperCase()}</div>
             <div>
-              <p className="org-label">Кампания от</p>
+              <p className="org-label">Сбор от</p>
               <p className="org-name">
                 {campaign.organizer?.name}
                 {campaign.organizer?.isVerified && <span className="org-verified">✓</span>}
@@ -147,7 +147,7 @@ export default function CampaignDetailPage() {
             {/* Raised */}
             <div className="sidebar-raised">
               <span className="raised-amount">{campaign.raisedAmount?.toLocaleString()} KGS</span>
-              <span className="raised-goal">собрано из {campaign.goalAmount?.toLocaleString()} KGS цели</span>
+              <span className="raised-goal">собрано из {campaign.goalAmount?.toLocaleString()} KGS</span>
             </div>
 
             {/* Progress */}
@@ -189,7 +189,7 @@ export default function CampaignDetailPage() {
               )
             ) : (
               <div className="sidebar-closed">
-                Кампания {campaign.status}
+                Сбор {campaign.status}
               </div>
             )}
 

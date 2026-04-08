@@ -76,7 +76,7 @@ router.get('/:id', async (req, res) => {
       .populate('organizer', 'name trustScore isVerified avatar createdAt')
 
     if (!campaign) {
-      return res.status(404).json({ success: false, message: 'Campaign not found.' })
+      return res.status(404).json({ success: false, message: 'Сбор не найден.' })
     }
 
     const recentDonations = await Transaction.find({
@@ -109,13 +109,13 @@ router.post(
 
       // Validate
       const errors = {}
-      if (!title       || title.trim().length < 5)              errors.title       = 'Title too short'
-      if (!description || description.trim().length < 20)       errors.description = 'Description too short'
-      if (!category)                                             errors.category    = 'Category is required'
-      if (!goalAmount  || isNaN(goalAmount) || +goalAmount < 1000) errors.goalAmount = 'Minimum goal is 1000 KGS'
+      if (!title       || title.trim().length < 5)              errors.title       = 'Название слишком короткое'
+      if (!description || description.trim().length < 20)       errors.description = 'Описание слишком короткое'
+      if (!category)                                             errors.category    = 'Категория обязательна'
+      if (!goalAmount  || isNaN(goalAmount) || +goalAmount < 1000) errors.goalAmount = 'Минимальная цель - 1000 KGS'
 
       if (Object.keys(errors).length) {
-        return res.status(400).json({ success: false, message: 'Validation failed', errors })
+        return res.status(400).json({ success: false, message: 'Проверка не удалась', errors })
       }
 
       // Format uploaded files
@@ -146,8 +146,8 @@ router.post(
       res.status(201).json({
         success: true,
         message: req.user.isVerified
-          ? 'Campaign is now live!'
-          : 'Campaign submitted for review.',
+          ? 'Сбор запущен!'
+          : 'Сбор отправлен ​​на рассмотрение.',
         campaign: populated,
       })
     } catch (err) {
@@ -162,12 +162,12 @@ router.post(
 router.put('/:id', protect, async (req, res) => {
   try {
     const campaign = await Campaign.findById(req.params.id)
-    if (!campaign) return res.status(404).json({ success: false, message: 'Not found.' })
+    if (!campaign) return res.status(404).json({ success: false, message: 'Не найдено.' })
 
     const isOwner = campaign.organizer.toString() === req.user._id.toString()
     const isAdmin = req.user.role === 'admin'
     if (!isOwner && !isAdmin) {
-      return res.status(403).json({ success: false, message: 'Not authorized.' })
+      return res.status(403).json({ success: false, message: 'Не авторизован.' })
     }
 
     // Organizers can only update these fields

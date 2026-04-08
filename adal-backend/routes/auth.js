@@ -21,18 +21,18 @@ router.post('/register', async (req, res) => {
 
     // Validate
     const errors = {}
-    if (!name  || name.trim().length < 2)            errors.name     = 'Name must be at least 2 characters'
-    if (!email || !/^\S+@\S+\.\S+$/.test(email))     errors.email    = 'Enter a valid email'
-    if (!password || password.length < 6)            errors.password = 'Password must be at least 6 characters'
-    if (role && !['donor','organizer'].includes(role)) errors.role   = 'Invalid role'
+    if (!name  || name.trim().length < 2)            errors.name     = 'Имя должно быть не менее 2 символов'
+    if (!email || !/^\S+@\S+\.\S+$/.test(email))     errors.email    = 'Введите действительный адрес электронной почты'
+    if (!password || password.length < 6)            errors.password = 'Пароль должен быть не менее 6 символов'
+    if (role && !['donor','organizer'].includes(role)) errors.role   = 'Недопустимая роль'
 
     if (Object.keys(errors).length) {
-      return res.status(400).json({ success: false, message: 'Validation failed', errors })
+      return res.status(400).json({ success: false, message: 'Проверка не удалась', errors })
     }
 
     // Check duplicate email
     if (await User.findOne({ email: email.toLowerCase() })) {
-      return res.status(400).json({ success: false, message: 'This email is already registered.' })
+      return res.status(400).json({ success: false, message: 'Эта электронная почта уже зарегистрирована.' })
     }
 
     // Hash password with salt rounds = 12
@@ -50,13 +50,13 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Account created successfully.',
+      message: 'Аккаунт успешно создан.',
       token,
       user,
     })
   } catch (err) {
     console.error('Register error:', err)
-    res.status(500).json({ success: false, message: 'Server error. Please try again.' })
+    res.status(500).json({ success: false, message: 'Ошибка сервера. Пожалуйста, попробуйте еще раз.' })
   }
 })
 
@@ -67,36 +67,36 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Email and password are required.' })
+      return res.status(400).json({ success: false, message: 'Требуются адрес электронной почты и пароль.' })
     }
 
     // .select('+password') because we set select:false on the schema
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password')
 
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password.' })
+      return res.status(401).json({ success: false, message: 'Неверный адрес электронной почты или пароль.' })
     }
     if (user.isBlocked) {
-      return res.status(403).json({ success: false, message: 'Your account has been suspended.' })
+      return res.status(403).json({ success: false, message: 'Ваш аккаунт заблокирован.' })
     }
 
     // Compare plain password with bcrypt hash
     const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password.' })
+      return res.status(401).json({ success: false, message: 'Неверный адрес электронной почты или пароль.' })
     }
 
     const token = signToken(user)
 
     res.json({
       success: true,
-      message: 'Logged in successfully.',
+      message: 'Вы успешно вошли.',
       token,
       user: user.toJSON(),   // password is stripped by toJSON()
     })
   } catch (err) {
     console.error('Login error:', err)
-    res.status(500).json({ success: false, message: 'Server error. Please try again.' })
+    res.status(500).json({ success: false, message: 'Ошибка сервера. Пожалуйста, попробуйте еще раз.' })
   }
 })
 
@@ -118,7 +118,7 @@ router.put('/profile', protect, async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true })
     res.json({ success: true, user })
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Could not update profile.' })
+    res.status(500).json({ success: false, message: 'Не удалось обновить профиль.' })
   }
 })
 
@@ -127,7 +127,7 @@ router.put('/profile', protect, async (req, res) => {
 router.post('/upload-document', protect, upload.single('document'), async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ success: false, message: 'No file uploaded.' })
+      return res.status(400).json({ success: false, message: 'Файл не загружен.' })
     }
 
     const doc = {
@@ -138,9 +138,9 @@ router.post('/upload-document', protect, upload.single('document'), async (req, 
     }
 
     await User.findByIdAndUpdate(req.user._id, { $push: { documents: doc } })
-    res.json({ success: true, message: 'Document uploaded.', document: doc })
+    res.json({ success: true, message: 'Документ загружен.', document: doc })
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Upload failed.' })
+    res.status(500).json({ success: false, message: 'Загрузка не удалась.' })
   }
 })
 

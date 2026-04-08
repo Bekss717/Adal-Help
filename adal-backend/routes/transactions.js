@@ -10,7 +10,7 @@ router.get('/convert', async (req, res) => {
   try {
     const { amount, from } = req.query
     if (!amount || !from) {
-      return res.status(400).json({ success: false, message: 'amount and from are required.' })
+      return res.status(400).json({ success: false, message: 'Необходимы поля «сумма» и «от».' })
     }
     const result = await convertToKGS(parseFloat(amount), from)
     res.json({ success: true, ...result })
@@ -26,16 +26,16 @@ router.post('/donate', protect, async (req, res) => {
     const { campaignId, amount, currency = 'KGS', isAnonymous = false, donorType = 'individual', message } = req.body
 
     if (!campaignId) {
-      return res.status(400).json({ success: false, message: 'Campaign ID is required.' })
+      return res.status(400).json({ success: false, message: 'Требуется ID сбора.' })
     }
     if (!amount || isNaN(amount) || Number(amount) <= 0) {
-      return res.status(400).json({ success: false, message: 'Enter a valid donation amount.' })
+      return res.status(400).json({ success: false, message: 'Введите действительную сумму пожертвования.' })
     }
 
     const campaign = await Campaign.findById(campaignId)
-    if (!campaign) return res.status(404).json({ success: false, message: 'Campaign not found.' })
+    if (!campaign) return res.status(404).json({ success: false, message: 'Сбор не найден.' })
     if (campaign.status !== 'active') {
-      return res.status(400).json({ success: false, message: 'This campaign is not accepting donations.' })
+      return res.status(400).json({ success: false, message: 'В рамках этого сбора пожертвования не принимаются.' })
     }
 
     // Convert to KGS using live exchange rate
@@ -69,7 +69,7 @@ router.post('/donate', protect, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: `Donation of ${amount} ${currency} (${amountKGS} KGS) received. Thank you!`,
+      message: `Пожертвование ${amount} ${currency} (${amountKGS} KGS) получено. Спасибо вам!`,
       transaction,
       amountKGS,
       exchangeRate: rate,

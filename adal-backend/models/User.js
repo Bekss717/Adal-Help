@@ -3,23 +3,23 @@ const mongoose = require('mongoose')
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [true, 'Имя обязательно'],
     trim: true,
-    minlength: [2,   'Name must be at least 2 characters'],
-    maxlength: [100, 'Name cannot exceed 100 characters'],
+    minlength: [2,   'Имя должно состоять как минимум из 2 символов.'],
+    maxlength: [100, 'Имя не может превышать 100 символов.'],
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: [true, 'Требуется электронная почта'],
     unique: true,
     lowercase: true,
     trim: true,
-    match: [/^\S+@\S+\.\S+$/, 'Enter a valid email'],
+    match: [/^\S+@\S+\.\S+$/, 'Введите действительный адрес электронной почты'],
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters'],
+    required: [true, 'Пароль обязателен'],
+    minlength: [6, 'Пароль должен состоять как минимум из 6 символов.'],
     select: false,   // never returned in queries unless explicitly asked
   },
   role: {

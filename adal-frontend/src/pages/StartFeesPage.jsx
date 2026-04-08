@@ -4,17 +4,17 @@ import api from '../utils/api'
 import '../page-styles/StartFeesPage.css'
 
 const CATEGORIES = [
-  { slug: 'medical',    label: 'Medical',       emoji: '🏥' },
-  { slug: 'children',   label: 'Children',      emoji: '👶' },
-  { slug: 'elderly',    label: 'Elderly People',emoji: '👴' },
-  { slug: 'pets',       label: 'Pets',          emoji: '🐾' },
-  { slug: 'disability', label: 'Disabilities',  emoji: '♿' },
-  { slug: 'disaster',   label: 'Disaster Relief',emoji: '🆘' },
-  { slug: 'education',  label: 'Education',     emoji: '📚' },
-  { slug: 'other',      label: 'Other',         emoji: '💛' },
+  { slug: 'medical',    label: 'Медицина',       emoji: '🏥' },
+  { slug: 'children',   label: 'Дети',           emoji: '👶' },
+  { slug: 'elderly',    label: 'Пожилые',       emoji: '👴' },
+  { slug: 'pets',       label: 'Питомцы',          emoji: '🐾' },
+  { slug: 'disability', label: 'Инвалидность',  emoji: '♿' },
+  { slug: 'disaster',   label: 'Катастрофы',emoji: '🆘' },
+  { slug: 'education',  label: 'Образование',     emoji: '📚' },
+  { slug: 'other',      label: 'Другие',         emoji: '💛' },
 ]
 
-const STEPS = ['Информация о кампании', 'Цель и детали', 'Документы', 'Обзор']
+const STEPS = ['Информация о сбре', 'Цель и подробности', 'Документы', 'Обзор']
 
 export default function StartFeesPage() {
   const navigate = useNavigate()
@@ -41,12 +41,12 @@ export default function StartFeesPage() {
   const validateStep = (s) => {
     const e = {}
     if (s === 0) {
-      if (!form.title || form.title.trim().length < 5) e.title = 'Title must be at least 5 characters'
-      if (!form.description || form.description.trim().length < 20) e.description = 'Description must be at least 20 characters'
-      if (!form.category) e.category = 'Please select a category'
+      if (!form.title || form.title.trim().length < 5) e.title = 'Заголовок должен содержать не менее 5 символов'
+      if (!form.description || form.description.trim().length < 20) e.description = 'Описание должно содержать не менее 20 символов'
+      if (!form.category) e.category = 'Пожалуйста, выберите категорию'
     }
     if (s === 1) {
-      if (!form.goalAmount || isNaN(form.goalAmount) || Number(form.goalAmount) < 1000) e.goalAmount = 'Minimum goal is 1,000 KGS'
+      if (!form.goalAmount || isNaN(form.goalAmount) || Number(form.goalAmount) < 1000) e.goalAmount = 'Минимальная цель - 1,000 KGS'
     }
     return e
   }
@@ -70,7 +70,15 @@ export default function StartFeesPage() {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       setSuccess(true)
-      setTimeout(() => navigate(`/campaigns/${res.data.campaign._id}`), 2000)
+      // Go to the new campaign's detail page after 2 seconds
+      const campaignId = res.data.campaign?._id
+      setTimeout(() => {
+        if (campaignId) {
+          navigate(`/campaigns/${campaignId}`)
+        } else {
+          navigate('/campaigns')
+        }
+      }, 2000)
     } catch (err) {
       setApiError(err.response?.data?.message || 'Отправка не удалась. Пожалуйста, попробуйте еще раз.')
       setStep(0)
@@ -80,9 +88,9 @@ export default function StartFeesPage() {
   if (success) return (
     <div className="start-success">
       <div className="success-icon">🎉</div>
-      <h2>Кампания отправлена!</h2>
-      <p>Ваша кампания находится на рассмотрении. Мы проверим ваши документы и активируем ее в ближайшее время.</p>
-      <p className="success-redirect">Перенаправляем вас к вашей кампании…</p>
+      <h2>Сбор запущен!</h2>
+      <p>Ваш сбор создан и теперь виден всем.</p>
+      <p className="success-redirect">Мы поможем вам подготовиться к вашему предвыборному сбору…</p>
     </div>
   )
 
@@ -92,8 +100,8 @@ export default function StartFeesPage() {
 
         {/* Header */}
         <div className="start-header">
-          <h1 className="start-title">Начать кампанию</h1>
-          <p className="start-subtitle">Заполните детали ниже. Наша команда проверит ваши документы перед запуском.</p>
+          <h1 className="start-title">Начать сбор</h1>
+          <p className="start-subtitle">Заполните поля ниже. Наша команда проверит ваши документы перед публикацией.</p>
         </div>
 
         {/* Stepper */}
@@ -113,12 +121,12 @@ export default function StartFeesPage() {
           {/* STEP 0: Campaign Info */}
           {step === 0 && (
             <div className="step-content">
-              <h3 className="step-title">Расскажите о вашей кампании</h3>
+              <h3 className="step-title">Расскажите нам о вашем сборе</h3>
 
               <div className="form-group">
-                <label className="form-label">Название кампании *</label>
+                <label className="form-label">Название сбора *</label>
                 <input className={`form-input${errors.title ? ' error' : ''}`} type="text"
-                  placeholder="например, Операция сердца для 7-летнего Амира"
+                  placeholder="Например, операция на сердце для 7-летнего Асана."
                   value={form.title} onChange={e => set('title', e.target.value)} />
                 {errors.title && <span className="form-error">{errors.title}</span>}
               </div>
@@ -126,10 +134,10 @@ export default function StartFeesPage() {
               <div className="form-group">
                 <label className="form-label">Описание *</label>
                 <textarea className={`form-input form-textarea${errors.description ? ' error' : ''}`}
-                  placeholder="Опишите ситуацию подробно. Что за помощь нужна? Кто получит пользу? На что пойдут деньги?"
+                  placeholder="Подробно опишите ситуацию. Какая помощь необходима? Кому это нужно? На что будут потрачены деньги?"
                   style={{ minHeight: 140 }}
                   value={form.description} onChange={e => set('description', e.target.value)} />
-                <span style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4 }}>{form.description.length} символов (мин 20)</span>
+                  <span style={{ fontSize: 12, color: 'var(--text-light)', marginTop: 4 }}>{form.description.length} символов (мин 20)</span>
                 {errors.description && <span className="form-error">{errors.description}</span>}
               </div>
 
@@ -153,7 +161,7 @@ export default function StartFeesPage() {
           {/* STEP 1: Goal & Details */}
           {step === 1 && (
             <div className="step-content">
-              <h3 className="step-title">Установите вашу цель</h3>
+              <h3 className="step-title">Установите свою цель</h3>
 
               <div className="form-group">
                 <label className="form-label">Цель сбора средств (KGS) *</label>
@@ -180,7 +188,7 @@ export default function StartFeesPage() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Местоположение (необязательно)</label>
-                  <input className="form-input" type="text" placeholder="например, Бишкек, Ош"
+                  <input className="form-input" type="text" placeholder="Напр., Бишкек, Ош"
                     value={form.location} onChange={e => set('location', e.target.value)} />
                 </div>
               </div>
@@ -188,7 +196,7 @@ export default function StartFeesPage() {
               <label className="toggle-row">
                 <div>
                   <p style={{ fontWeight: 600, fontSize: 14 }}>Отметить как срочное</p>
-                  <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Срочные кампании появляются на главной странице и в результатах поиска первыми</p>
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Срочные сборы отображаются на главной странице и в результатах поиска в первую очередь.</p>
                 </div>
                 <div className={`toggle-switch${form.isUrgent ? ' on' : ''}`} onClick={() => set('isUrgent', !form.isUrgent)}>
                   <div className="toggle-thumb"/>
@@ -200,14 +208,14 @@ export default function StartFeesPage() {
           {/* STEP 2: Documents */}
           {step === 2 && (
             <div className="step-content">
-              <h3 className="step-title">Загрузить подтверждающие документы</h3>
-              <p className="step-desc">Документы подтверждают вашу кампанию и повышают доверие доноров. Принимаются: PDF, JPG, PNG, DOC (макс 10МБ каждый).</p>
+              <h3 className="step-title">Загрузите подтверждающие документы</h3>
+              <p className="step-desc">Документы подтверждают эффективность вашего сбора и повышают доверие доноров. Принимаются файлы в форматах PDF, JPG, PNG, DOC (максимальный размер каждого — 10 МБ).</p>
 
               <div className="upload-section">
                 <label className="upload-box" htmlFor="docs-upload">
                   <span className="upload-icon">📄</span>
-                  <p className="upload-title">Документы верификации</p>
-                  <p className="upload-hint">Медицинские сертификаты, счета, копии ID, квитанции</p>
+                  <p className="upload-title">Подтверждающие документы</p>
+                  <p className="upload-hint">Медицинские справки, счета-фактуры, копии удостоверений личности, квитанции.</p>
                   <span className="btn btn-secondary btn-sm" style={{ pointerEvents: 'none', marginTop: 8 }}>Выбрать файлы</span>
                   <input id="docs-upload" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style={{ display: 'none' }}
                     onChange={e => setDocuments(Array.from(e.target.files))} />
@@ -228,9 +236,9 @@ export default function StartFeesPage() {
               <div className="upload-section">
                 <label className="upload-box" htmlFor="imgs-upload">
                   <span className="upload-icon">🖼</span>
-                  <p className="upload-title">Изображения кампании</p>
-                  <p className="upload-hint">Фото, связанные с вашей целью (необязательно, но рекомендуется)</p>
-                  <span className="btn btn-secondary btn-sm" style={{ pointerEvents: 'none', marginTop: 8 }}>Выбрать изображения</span>
+                  <p className="upload-title">Изображения сбора</p>
+                  <p className="upload-hint">Фотографии, связанные с вашей деятельностью (необязательно, но рекомендуется).</p>
+                  <span className="btn btn-secondary btn-sm" style={{ pointerEvents: 'none', marginTop: 8 }}>Выберите изображения</span>
                   <input id="imgs-upload" type="file" multiple accept=".jpg,.jpeg,.png" style={{ display: 'none' }}
                     onChange={e => setImages(Array.from(e.target.files))} />
                 </label>
@@ -251,7 +259,7 @@ export default function StartFeesPage() {
           {/* STEP 3: Review */}
           {step === 3 && (
             <div className="step-content">
-              <h3 className="step-title">Обзор вашей кампании</h3>
+              <h3 className="step-title">Проверьте свою кампанию</h3>
               <div className="review-grid">
                 <div className="review-item"><span className="review-label">Название</span><span className="review-val">{form.title}</span></div>
                 <div className="review-item"><span className="review-label">Категория</span>
@@ -260,7 +268,7 @@ export default function StartFeesPage() {
                 <div className="review-item"><span className="review-label">Цель</span><span className="review-val">{Number(form.goalAmount).toLocaleString()} KGS</span></div>
                 {form.deadline && <div className="review-item"><span className="review-label">Дедлайн</span><span className="review-val">{new Date(form.deadline).toLocaleDateString()}</span></div>}
                 {form.location && <div className="review-item"><span className="review-label">Местоположение</span><span className="review-val">{form.location}</span></div>}
-                <div className="review-item"><span className="review-label">Срочное</span><span className="review-val">{form.isUrgent ? '🔴 Да' : 'Нет'}</span></div>
+                <div className="review-item"><span className="review-label">Срочный</span><span className="review-val">{form.isUrgent ? '🔴 Да' : 'Нет'}</span></div>
                 <div className="review-item"><span className="review-label">Документы</span><span className="review-val">{documents.length} файл(ов)</span></div>
                 <div className="review-item"><span className="review-label">Изображения</span><span className="review-val">{images.length} файл(ов)</span></div>
               </div>
@@ -269,7 +277,7 @@ export default function StartFeesPage() {
                 <p>{form.description}</p>
               </div>
               <div className="review-notice">
-                ℹ️ Ваша кампания будет рассмотрена командой AdalHelp перед запуском. Обычно это занимает 24–48 часов.
+                ℹ️ Перед запуском ваш сбор будет проверена командой AdalHelp. Обычно это занимает 24–48 часов.
               </div>
             </div>
           )}
@@ -284,7 +292,7 @@ export default function StartFeesPage() {
               <button className="btn btn-primary" onClick={nextStep}>Продолжить →</button>
             ) : (
               <button className="btn btn-primary btn-lg" onClick={handleSubmit} disabled={loading}>
-                {loading ? 'Отправка…' : '🚀 Отправить кампанию'}
+                {loading ? 'Отправка…' : '🚀 Отправить сбор'}
               </button>
             )}
           </div>

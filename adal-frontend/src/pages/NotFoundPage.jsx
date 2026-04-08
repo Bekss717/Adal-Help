@@ -10,7 +10,7 @@ export default function NotFoundPage() {
         <p className="notfound-desc">Страница, которую вы ищете, не существует или была перемещена.</p>
         <div className="notfound-actions">
           <Link to="/" className="btn btn-primary btn-lg">Главная</Link>
-          <Link to="/campaigns" className="btn btn-secondary btn-lg">Просмотреть кампании</Link>
+          <Link to="/campaigns" className="btn btn-secondary btn-lg">Просмотреть сборы</Link>
         </div>
       </div>
     </div>
