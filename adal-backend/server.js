@@ -9,12 +9,7 @@ const app = express()
 
 // ── Middleware ────────────────────────────────────
 app.use(cors({ 
-  origin: [
-    'http://localhost:5173', 
-    'http://localhost:3000', 
-    'https://adal-help.vercel.app',
-    'https://adal-help-9lrk980p3-bekss717s-projects.vercel.app'
-  ], 
+  origin: true, // This allows any origin that your frontend uses
   credentials: true 
 }))
 app.use(express.json())
