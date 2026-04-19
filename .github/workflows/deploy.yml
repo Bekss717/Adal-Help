@@ -1,0 +1,53 @@
+name: Deploy Frontend to Pages
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build_site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          # Updated to match your folder name 'adal-frontend'
+          cache-dependency-path: './adal-frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./adal-frontend
+
+      - name: Build
+        # We pass the API URL here so Vite can bake it into the static files
+        run: npm run build
+        working-directory: ./adal-frontend
+        env:
+          VITE_API_URL: https://adal-backend-ty0m.onrender.com/api
+
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Vite always outputs to the 'dist' folder
+          path: './adal-frontend/dist/'
+
+  deploy:
+    needs: build_site
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
