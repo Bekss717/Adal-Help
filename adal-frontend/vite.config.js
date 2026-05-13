@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// Replace 'YOUR_REPO_NAME' with the actual name of your project on GitHub (e.g., 'adal-help')
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react()], // CRITICAL: This fixes the white screen
   server: {
     port: 3000,
     proxy: {
@@ -16,4 +17,7 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    outDir: 'dist', // Ensures the output matches your deploy.yml path
+  }
 })

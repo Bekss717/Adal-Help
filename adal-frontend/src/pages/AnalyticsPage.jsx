@@ -216,7 +216,7 @@ export default function AnalyticsPage() {
               <div className="stat-cards">
                 <Card className="stat-card" bordered={false}>
                   <Statistic
-                    title="Total Raised"
+                    title="Всего собрано"
                     value={formatKGS(data.totals?.totalRaisedKGS)}
                     valueStyle={{ color: 'var(--green)', fontFamily: 'var(--font-display)', fontSize: 28 }}
                     prefix="💰"
