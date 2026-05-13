@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files — NEVER push these
+.env
+**/.env
+.env.local
+.env.production
+
+# Uploaded files
+adal-backend/uploads/*
+!adal-backend/uploads/.gitkeep
+
+# Build output
+adal-frontend/dist/
+adal-frontend/.vite/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
